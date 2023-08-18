@@ -4,11 +4,25 @@ const path = require('path')
 const fs = require('fs')
 
 exports.index = (req, res, next) => {
+    const currentPage = req.query.page || 1
+    const perPage = req.query.perPage || 5
+    let totalItems;
+
     Blog.find()
+    .countDocuments()
+    .then(count => {
+        totalItems = count
+        return Blog.find()
+        .skip((parseInt(currentPage) - 1) * perPage)
+        .limit(perPage)
+    })
     .then(result => {
         res.status(200).json({
             message: 'Berhasil memanggil data',
-            data: result
+            data: result,
+            total_data: totalItems,
+            per_page: perPage,
+            current_page: currentPage
         })
     })
     .catch(err => {
