@@ -61,7 +61,6 @@ exports.create = (req, res, next) => {
     })
 
     posting.save()
-    
     .then(result => {
         res.status(201).json({
             message: 'Berhasil menambahkan blog post baru',

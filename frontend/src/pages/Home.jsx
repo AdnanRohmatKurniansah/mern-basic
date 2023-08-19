@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { fetchBlog } from '../libs/api'
 
 export default function Home() {
   const [blogs, setBlogs] = useState([])
@@ -11,17 +11,21 @@ export default function Home() {
  
   const navigate = useNavigate()
 
-  useEffect((page) => {
-    axios.get(`http://localhost:3000/blog/index?page=${page}&perPage=8`)
-    .then((result) => {
-      const response = result.data
-      setBlogs(response.data)
-      setPaginate(response)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }, [])
+  useEffect(() => {
+    loadBlog(counter)
+  }, [counter])
+
+  const loadBlog = (page) => {
+    fetchBlog(page)
+      .then((result) => {
+        const response = result.data;
+        setBlogs(response.data);
+        setPaginate(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const previous = () => {
     setCounter(counter <= 1 ? 1 : counter - 1)
@@ -31,8 +35,8 @@ export default function Home() {
   const totalPage = Math.ceil(paginate.total_data / paginate.per_page)
 
   const next = () => {
-    setCounter(counter === totalPage ? totalPage : counter + 1)
-    console.log(counter)
+      setCounter(counter === totalPage ? totalPage : counter + 1)
+      console.log(counter)
   }
 
   return (
