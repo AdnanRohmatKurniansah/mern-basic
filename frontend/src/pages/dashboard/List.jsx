@@ -2,10 +2,17 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import { fetchBlog } from '../../libs/api'
+import { useNavigate } from 'react-router-dom'
 
 export default function List() {
+    const token = localStorage.getItem('token')
     const [blogs, setBlogs] = useState([])
+    const navigate = useNavigate()
+
     useEffect((page) => {
+        if (!token) {
+            navigate('/login')
+        }
         fetchBlog(page)
           .then((result) => {
             const response = result.data;
@@ -13,7 +20,7 @@ export default function List() {
           })
           .catch((err) => {
             console.log(err);
-          });
+        });
       }, [])
 
   return (

@@ -7,7 +7,7 @@ const authRoutes = require('./src/routes/auth')
 const bodyParser = require('body-parser')
 const multer = require('multer')
 const path = require('path')
-const authController = require('./src/controllers/authController')
+const cookieParser = require('cookie-parser')
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -41,14 +41,11 @@ app.use(multer({
     fileFilter: fileFilter
 }).single('image'))
 
+app.use(cookieParser())
+
 app.use('/blog', blogRoutes)
+
 app.use('/auth', authRoutes)
-// app.use('/dashboard', authController.verify, (req, res) => {
-//     res.json({
-//         isLoggedIn: true,
-//         name: req.user.name
-//     })
-// })
 
 app.use((error, req, res, next) => {
     const status = error.errorStatus || 500

@@ -42,7 +42,7 @@ export default function Home() {
   return (
     <div>
         <Navbar />
-        <div className="mx-10 md:container md:mx-auto mt-10 md:grid md:grid-cols-4 gap-4">
+        <div className="mx-10 md:container md:mx-auto mt-10 md:grid md:grid-cols-3 gap-4">
           {
           blogs.length > 0 && (
             blogs.map((blog, i) => (
