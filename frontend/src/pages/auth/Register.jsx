@@ -35,27 +35,23 @@ export default function Register() {
       timerProgressBar: true,
     })
 
-    register(formData)
-      .then(({data}) => {
-        toast.fire({
-          icon: "success",
-          text: data.message
-        })
-        navigate('/login')
-      }).catch(({response}) => {
-        if (response.status === 409) {
-          toast.fire({
-            text: response.data.message,
-            icon: "error"
-          })
-        } else {
-          setValidation(response.data.message.errors)
-          toast.fire({
-            text: response.data.message.name,
-            icon: "error"
-          })
-        } 
+    const response = await register(formData)
+    if (response.data) {
+      toast.fire({
+        icon: 'success',
+        text: response.data.message
       })
+      navigate('/login')
+    } else {
+      if (response.response.status === 409) {
+        toast.fire({
+          text: response.response.data.message,
+          icon: "error"
+        })
+      } else {
+        setValidation(response.response.data.errors)
+      }
+    }
   }
 
   return (
@@ -67,25 +63,25 @@ export default function Register() {
                <form onSubmit={registerHandle} className='mt-5'>
                 <input type="text" required value={name} placeholder="Name" onChange={(event)=>{setName(event.target.value)}} className="input my-3 input-bordered w-full" />
                 {
-                  validation.name && (
+                  validation[0] && (
                     <span className="text-red-600 text-xs">
-                        {validation.name.message}
+                        {validation[0].msg}
                     </span>
                   )                        
                 }
                 <input type="email" required value={email} placeholder="Email" onChange={(event)=>{setEmail(event.target.value)}} className="input my-3 input-bordered w-full" />
                 {
-                  validation.email && (
+                  validation[1] && (
                     <span className="text-red-600 text-xs">
-                        {validation.email.message}
+                        {validation[1].msg}
                     </span>
                   )                        
                 }
                 <input type="password" required value={password} placeholder="Password" onChange={(event)=>{setPassword(event.target.value)}} className="input my-3 input-bordered w-full" />
                 {
-                  validation.password && (
+                  validation[2] && (
                     <span className="text-warning text-xs mt-1">
-                        {validation.password.message}
+                        {validation[2].msg}
                     </span>
                   )                        
                 }

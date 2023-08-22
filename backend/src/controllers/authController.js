@@ -1,8 +1,18 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user'); 
 const { createSecretToken } = require('../tokenize/secretToken');
+const { validationResult } = require('express-validator');
 
 exports.register = async (req, res, next) => {
+    const errors = validationResult(req)
+    
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            message: 'Invalid value',
+            errors: errors.array()
+        });
+    }
+
     try {
         const { name, email, password } = req.body
         const existingUser = await User.findOne({ email })
@@ -28,6 +38,15 @@ exports.register = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
+    const errors = validationResult(req)
+    
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            message: 'Invalid value',
+            errors: errors.array()
+        });
+    }
+
     try {
         const { email, password } = req.body
         const user = await User.findOne({ email })
@@ -53,7 +72,6 @@ exports.login = async (req, res, next) => {
         res.status(500).json({
             message: error
         })
-        next()
     }
 }
 

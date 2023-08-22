@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Navbar() {
   const token = localStorage.getItem('token')
@@ -23,14 +23,17 @@ export default function Navbar() {
   return (
     <div className="navbar bg-primary text-white">
         <div className="navbar-start">
-            <a className="btn btn-ghost normal-case text-3xl" href='/'>Mern.</a>
+            <Link className="btn btn-ghost normal-case text-3xl" to={'/'}>Mern.</Link>
         </div>
         <div className="navbar-end">
             {
               isLoggedIn ? (
-                <button className='btn btn-info' onClick={logout}>Logout</button>
+                <div>
+                  <Link className="btn" to={'/dashboard'}>Dashboard</Link>
+                  <button className='btn btn-info' onClick={logout}>Logout</button>
+                </div>
               ) : (
-                <a className="btn" href='/login'>Login</a>
+                <Link className="btn" to={'/login'}>Login</Link>
               )
             } 
         </div>
