@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { fetchBlog } from '../libs/api'
 
 export default function Home() {
@@ -9,22 +9,18 @@ export default function Home() {
   const [paginate, setPaginate] = useState({})
   const [counter, setCounter] = useState(1)
  
-  const navigate = useNavigate()
-
   useEffect(() => {
     loadBlog(counter)
   }, [counter])
 
-  const loadBlog = (page) => {
-    fetchBlog(page)
-      .then((result) => {
-        const response = result.data;
-        setBlogs(response.data);
-        setPaginate(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const loadBlog = async (page) => {
+    const response = await fetchBlog(page)
+      if (response.data) {
+          setBlogs(response.data.data)
+          setPaginate(response.data)
+      } else {
+          console.log(response.response.data.message)
+      }
   };
 
   const previous = () => {
@@ -42,7 +38,7 @@ export default function Home() {
   return (
     <div>
         <Navbar />
-        <div className="mx-10 md:container md:mx-auto mt-10 md:grid md:grid-cols-3 gap-4">
+        <div className="mx-10 md:container md:mx-auto mt-10 md:grid md:grid-cols-4 gap-4">
           {
           blogs.length > 0 && (
             blogs.map((blog, i) => (
@@ -54,7 +50,7 @@ export default function Home() {
                 <h2 className="card-title">{blog.title}</h2>
                 <p>{blog.body}</p>
                 <div className="card-actions">
-                  <button className="btn btn-primary" onClick={() => navigate('/blog')}>View</button>
+                  <Link to={`/blog/${blog._id}`} className="btn btn-primary">View</Link>
                 </div>
               </div>
               </div>
