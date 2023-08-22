@@ -4,6 +4,7 @@ import Footer from '../../components/Footer'
 import { deleteBlog, fetchBlog } from '../../libs/api'
 import { Link, useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import axios from 'axios'
 
 export default function List() {
     const token = localStorage.getItem('token')
@@ -29,6 +30,8 @@ export default function List() {
     }, [counter])
 
     const loadBlog = async (page) => {
+        axios.defaults.headers.common['Authorization'] = `${token}`
+        
         const response = await fetchBlog(page)
         if (response.data) {
             setBlogs(response.data.data)

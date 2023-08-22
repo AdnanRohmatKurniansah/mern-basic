@@ -2,6 +2,8 @@ const {validationResult} = require('express-validator')
 const Blog = require('../models/blog')
 const path = require('path')
 const fs = require('fs')
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
 
 exports.index = async (req, res, next) => {
     try {
@@ -51,13 +53,19 @@ exports.create = async (req, res, next) => {
         const body = req.body.body;
         const image = req.file.path;
 
+        const token = req.headers.authorization.split(' ')[1];
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        const authorId = decodedToken.id;
+
+        const user = await User.findById(authorId);
+
         const posting = new Blog({
             title: title,
             body: body,
             image: image,
             author: {
-                id: 1,
-                nama: 'Adnan'
+                id: user._id,
+                nama: user.name
             }
         });
 
